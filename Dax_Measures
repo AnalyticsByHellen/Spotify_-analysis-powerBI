@@ -1,0 +1,142 @@
+DEFINE
+
+MEASURE 'Spotify Analysis'[Total Songs] =
+COUNTROWS('Spotify Analysis')
+
+MEASURE 'Spotify Analysis'[Unique Songs] =
+DISTINCTCOUNT('Spotify Analysis'[song])
+
+MEASURE 'Spotify Analysis'[Unique Artists] =
+DISTINCTCOUNT('Spotify Analysis'[artist])
+
+MEASURE 'Spotify Analysis'[Average Popularity] =
+AVERAGE('Spotify Analysis'[popularity])
+
+MEASURE 'Spotify Analysis'[Maximum Popularity] =
+MAX('Spotify Analysis'[popularity])
+
+MEASURE 'Spotify Analysis'[Minimum Popularity] =
+MIN('Spotify Analysis'[popularity])
+
+MEASURE 'Spotify Analysis'[Average Chart Position] =
+AVERAGE('Spotify Analysis'[position])
+
+MEASURE 'Spotify Analysis'[Best Chart Position] =
+MIN('Spotify Analysis'[position])
+
+MEASURE 'Spotify Analysis'[Worst Chart Position] =
+MAX('Spotify Analysis'[position])
+
+MEASURE 'Spotify Analysis'[Average Duration (Minutes)] =
+AVERAGE('Spotify Analysis'[duration_ms]) / 60000
+
+MEASURE 'Spotify Analysis'[Total Duration (Minutes)] =
+SUM('Spotify Analysis'[duration_ms]) / 60000
+
+MEASURE 'Spotify Analysis'[Average Album Tracks] =
+AVERAGE('Spotify Analysis'[total_tracks])
+
+MEASURE 'Spotify Analysis'[Total Album Tracks] =
+SUM('Spotify Analysis'[total_tracks])
+
+MEASURE 'Spotify Analysis'[Explicit Songs] =
+CALCULATE(
+    COUNTROWS('Spotify Analysis'),
+    'Spotify Analysis'[is_explicit] = TRUE()
+)
+
+MEASURE 'Spotify Analysis'[Clean Songs] =
+CALCULATE(
+    COUNTROWS('Spotify Analysis'),
+    'Spotify Analysis'[is_explicit] = FALSE()
+)
+
+MEASURE 'Spotify Analysis'[Percent Explicit] =
+DIVIDE(
+    [Explicit Songs],
+    [Total Songs],
+    0
+)
+
+MEASURE 'Spotify Analysis'[Average Popularity (Explicit)] =
+CALCULATE(
+    AVERAGE('Spotify Analysis'[popularity]),
+    'Spotify Analysis'[is_explicit] = TRUE()
+)
+
+MEASURE 'Spotify Analysis'[Average Popularity (Clean)] =
+CALCULATE(
+    AVERAGE('Spotify Analysis'[popularity]),
+    'Spotify Analysis'[is_explicit] = FALSE()
+)
+
+MEASURE 'Spotify Analysis'[Average Position (Explicit)] =
+CALCULATE(
+    AVERAGE('Spotify Analysis'[position]),
+    'Spotify Analysis'[is_explicit] = TRUE()
+)
+
+MEASURE 'Spotify Analysis'[Average Position (Clean)] =
+CALCULATE(
+    AVERAGE('Spotify Analysis'[position]),
+    'Spotify Analysis'[is_explicit] = FALSE()
+)
+
+MEASURE 'Spotify Analysis'[Latest Release Date] =
+MAX('Spotify Analysis'[release_date])
+
+MEASURE 'Spotify Analysis'[Earliest Release Date] =
+MIN('Spotify Analysis'[release_date])
+
+MEASURE 'Spotify Analysis'[Average Song Age (Years)] =
+AVERAGEX(
+    'Spotify Analysis',
+    DATEDIFF(
+        'Spotify Analysis'[release_date],
+        TODAY(),
+        YEAR
+    )
+)
+
+MEASURE 'Spotify Analysis'[Songs Released] =
+COUNT('Spotify Analysis'[release_date])
+
+EVALUATE
+
+SUMMARIZECOLUMNS(
+
+    "Total Songs",[Total Songs],
+    "Unique Songs",[Unique Songs],
+    "Unique Artists",[Unique Artists],
+
+    "Average Popularity",[Average Popularity],
+    "Maximum Popularity",[Maximum Popularity],
+    "Minimum Popularity",[Minimum Popularity],
+
+    "Average Chart Position",[Average Chart Position],
+    "Best Chart Position",[Best Chart Position],
+    "Worst Chart Position",[Worst Chart Position],
+
+    "Average Duration (Minutes)",[Average Duration (Minutes)],
+    "Total Duration (Minutes)",[Total Duration (Minutes)],
+
+    "Average Album Tracks",[Average Album Tracks],
+    "Total Album Tracks",[Total Album Tracks],
+
+    "Explicit Songs",[Explicit Songs],
+    "Clean Songs",[Clean Songs],
+    "Percent Explicit",[Percent Explicit],
+
+    "Average Popularity (Explicit)",[Average Popularity (Explicit)],
+    "Average Popularity (Clean)",[Average Popularity (Clean)],
+
+    "Average Position (Explicit)",[Average Position (Explicit)],
+    "Average Position (Clean)",[Average Position (Clean)],
+
+    "Earliest Release Date",[Earliest Release Date],
+    "Latest Release Date",[Latest Release Date],
+    "Average Song Age (Years)",[Average Song Age (Years)],
+
+    "Songs Released",[Songs Released]
+
+)
